@@ -1,4 +1,5 @@
 # 🤖 지능형 대학 생활 통합 가이드 시스템 — 단봇 (DAN-BOT)
+---
 
 ## 프로젝트 소개
 
@@ -31,26 +32,28 @@
 | 멀티미디어 가이드 | 캠퍼스 시설 및 위치 문의 시 시각적 이미지(맵) 동시 노출 |
 | 퀵 메뉴 시스템 | 학사일정, 편의시설 등 빈도가 높은 질문을 원클릭으로 처리하는 UX 제공 |
 | 로컬 AI 보안 | Ollama를 이용한 로컬 서버 운영으로 학생 질의 데이터 보안 유지 |
-
 ---
 
 ## 🛠️ 기술 스택
 
-| Backend & Automation |
---
+Backend & Automation
+|---|---|
 | 프레임워크 | Flask (Python 3.12) |
 | 데이터 수집 | Selenium WebDriver |
 | 커뮤니케이션 | Real-time Data Streaming API |
+---
 
-| Frontend |
---
+Frontend
+|---|---|
 | 인터페이스 | HTML / CSS / JS (Markdown-supported Chat UI) |
 | 환경 관리 | Git, GitHub, venv |
+---
 
-| Artificial Intelligence |
---
+Artificial Intelligence
+|---|---|
 | AI 모델 | Ollama, Llama 3.2 (RAG 아키텍처 적용) |
 | 방법론 | RAG / Context Injection |
+---
 
 ---
 
@@ -77,27 +80,29 @@ AI 추론  # 수집된 데이터를 Llama 3.2 모델에 주입(Context Injection
 # Phase 1: Foundation (W1 - W4)
 - 요구사항 정의 및 시스템 아키텍처 설계
 - Selenium 기반 동적 웹 크롤링 엔진 및 예외 처리 시스템 구축
---
+---
+
 # Phase 2: Intelligence (W5 - W7)
 - Ollama 서빙 및 RAG 로직 최적화 (프롬프트 엔지니어링)
 - Flask 기반 백엔드 API와 프론트엔드 채팅 UI 연동
---
+---
+
 # Phase 3: Optimization (W8 - W10)
 - 데이터 정합성 검증 및 할루시네이션(환각) 방지 필터링 테스트
 - 베타 테스트 피드백 반영 및 최종 문서화
---
+---
+
 
 ---
 
 ## 팀원
 
 | 이름 | 역할 | 
-|---|---|---|
+|---|---|
 | 임찬형 | 전체 시스템 설계, Flask 서버 구축 및 모듈 통합 관리 |
 | 김희수 | 실시간 크롤링 엔진 구축 및 데이터 정제 알고리즘 구현 |
 | 정지윤 | Ollama 모델 최적화 및 RAG 시스템 아키텍처 설계 |
 | 주예나 | 웹 UI 개발, 시각 자산 관리 및 기술 문서화 |
-
 ---
 
 ## 실행 가이드
