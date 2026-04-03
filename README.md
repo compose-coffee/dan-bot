@@ -126,8 +126,7 @@ python src/app.py
 ```
 dan-bot/
 ├── assets/               # README용 이미지, 로고, UML 다이어그램
-├── docs/                 # 프로젝트 제안서 및 설계 문서
-│   ├── Proposal.md       # 프로젝트 제안서 (최종본)
+├── docs/                 # 설계 문서
 │   ├── UserGuide.md      # 사용자 매뉴얼
 │   └── DeveloperGuide.md # 시스템 설계 및 API 명세서
 ├── src/                  # 메인 소스 코드 디렉토리
