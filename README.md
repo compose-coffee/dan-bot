@@ -36,24 +36,21 @@
 
 ## 기술 스택
 
-Backend & Automation
-|---|
+| Backend | 기술 |
+|---|---|
 | 프레임워크 | Flask (Python 3.12) |
 | 데이터 수집 | Selenium WebDriver |
 | 커뮤니케이션 | Real-time Data Streaming API |
----
 
-Frontend
-|---|
+| Frontend | 기술 |
+|---|---|
 | 인터페이스 | HTML / CSS / JS (Markdown-supported Chat UI) |
 | 환경 관리 | Git, GitHub, venv |
----
 
-Artificial Intelligence
-|---|
+| Artificial Intelligence | 기술 |
+|---|---|
 | AI 모델 | Ollama, Llama 3.2 (RAG 아키텍처 적용) |
 | 방법론 | RAG / Context Injection |
----
 
 ---
 
@@ -78,14 +75,17 @@ AI 추론  # 수집된 데이터를 Llama 3.2 모델에 주입(Context Injection
 ## 개발 로드맵
 
 # Phase 1: Foundation (W1 - W4)
+
 - 요구사항 정의 및 시스템 아키텍처 설계
 - Selenium 기반 동적 웹 크롤링 엔진 및 예외 처리 시스템 구축
 
 # Phase 2: Intelligence (W5 - W7)
+
 - Ollama 서빙 및 RAG 로직 최적화 (프롬프트 엔지니어링)
 - Flask 기반 백엔드 API와 프론트엔드 채팅 UI 연동
 
 # Phase 3: Optimization (W8 - W10)
+
 - 데이터 정합성 검증 및 할루시네이션(환각) 방지 필터링 테스트
 - 베타 테스트 피드백 반영 및 최종 문서화
 
