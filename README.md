@@ -105,7 +105,7 @@ AI 추론      # 수집된 데이터를 Llama 3.2 모델에 주입(Context Injec
 
 ```bash
 # 1. 레포지토리 클론
-git clone https://github.com/Your-Repo/DAN-BOT.git
+git clone https://github.com/compose-coffee/dan-bot.git
 
 # 2. 가상환경 설정 및 패키지 설치
 python -m venv venv
