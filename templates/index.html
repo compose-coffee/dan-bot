@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>단봇 — 단국대 학사 AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <style>
+    /* ══════════════════════════════════════════
+       CSS 변수 — 라이트 / 다크 테마
+    ══════════════════════════════════════════ */
+    :root {
+      --nav:          #004c97;
+      --accent:       #2563eb;
+      --accent-soft:  #eff6ff;
+      --bg:           #f6f7fb;
+      --surface:      #ffffff;
+      --text:         #111827;
+      --muted:        #6b7280;
+      --hint:         #9ca3af;
+      --border:       rgba(0,0,0,0.07);
+      --bubble-ai:    #ffffff;
+      --bubble-user:  #1d4ed8;
+      --chip-border:  #dbeafe;
+      --panel:        #fafbfe;
+      --panel-border: rgba(37,99,235,0.1);
+      --tag-bg:       #eff6ff;
+      --tag-text:     #1e40af;
+      --dot-red:      #f87171;
+      --dot-amber:    #fbbf24;
+      --dot-blue:     #60a5fa;
+      --dot-green:    #34d399;
+      --shadow:       0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --faq-shadow:   0 2px 8px rgba(37,99,235,0.08), 0 1px 3px rgba(0,0,0,0.05);
+    }
+    body.dark {
+      --bg:           #0f1117;
+      --surface:      #171923;
+      --text:         #f1f5f9;
+      --muted:        #94a3b8;
+      --hint:         #475569;
+      --border:       rgba(255,255,255,0.07);
+      --bubble-ai:    #1e2235;
+      --bubble-user:  #1d4ed8;
+      --chip-border:  #1e3a5f;
+      --panel:        #13161f;
+      --panel-border: rgba(99,155,235,0.12);
+      --tag-bg:       #1e2a3a;
+      --tag-text:     #93c5fd;
+      --accent-soft:  #1e2a3a;
+      --shadow:       0 1px 3px rgba(0,0,0,0.3);
+      --faq-shadow:   0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    /* ══════════════════════════════════════════
+       기본 레이아웃
+    ══════════════════════════════════════════ */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--bg);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background 0.2s;
+    }
+
+    /* ══════════════════════════════════════════
+       헤더
+    ══════════════════════════════════════════ */
+    #header {
+      background: var(--nav);
+      padding: 0 20px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .hd-brand { display: flex; align-items: center; gap: 10px; }
+    .hd-badge {
+      background: rgba(255,255,255,0.18);
+      border-radius: 8px;
+      padding: 5px 9px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .hd-badge span { color: white; font-size: 14px; font-weight: 700; letter-spacing: -0.3px; }
+    .hd-pill {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: 20px;
+      padding: 2px 9px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.85);
+      font-weight: 500;
+    }
+    .hd-actions { display: flex; gap: 5px; }
+    .hd-btn {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.28);
+      border-radius: 8px;
+      width: 33px;
+      height: 33px;
+      cursor: pointer;
+      color: rgba(255,255,255,0.95);
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+    }
+    .hd-btn:hover { background: rgba(255,255,255,0.28); }
+
+    /* ══════════════════════════════════════════
+       본문 — 채팅 + 사이드 패널
+    ══════════════════════════════════════════ */
+    #body {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ── 채팅 컬럼 ── */
+    #chat {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    /* ── 메시지 영역 ── */
+    #messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 20px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    #messages::-webkit-scrollbar { width: 4px; }
+    #messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    /* 메시지 행 */
+    .msg-row { display: flex; gap: 10px; align-items: flex-end; }
+    .msg-row.me { flex-direction: row-reverse; }
+
+    /* 아바타 */
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+      color: white;
+      background: var(--nav);
+    }
+    .avatar.me { background: #7c3aed; }
+
+    /* 말풍선 컬럼 */
+    .msg-col { display: flex; flex-direction: column; gap: 5px; max-width: 78%; }
+    .msg-col.me { align-items: flex-end; max-width: 68%; }
+    .msg-name { font-size: 11px; color: var(--hint); font-weight: 500; padding: 0 4px; }
+
+    /* 말풍선 */
+    .bub-wrap { position: relative; display: inline-block; max-width: 100%; }
+    .bubble {
+      padding: 11px 16px;
+      border-radius: 18px;
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text);
+      background: var(--bubble-ai);
+      box-shadow: var(--shadow);
+      word-break: break-word;
+    }
+    .bubble.bot { border-bottom-left-radius: 5px; }
+    .bubble.me  { background: var(--bubble-user); color: #fff; border-bottom-right-radius: 5px; }
+
+    /* 복사 버튼 — 호버 시 노출 */
+    .cpy-btn {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      background: rgba(0,0,0,0.08);
+      border: none;
+      border-radius: 6px;
+      width: 25px;
+      height: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.15s;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    body.dark .cpy-btn { background: rgba(255,255,255,0.1); }
+    .bub-wrap:hover .cpy-btn { opacity: 1; }
+    .cpy-btn:hover { background: rgba(0,0,0,0.16); color: var(--text); }
+
+    /* ── FAQ 가로 스크롤 ── */
+    .faq-scroll-wrap { margin-top: 8px; max-width: 380px; }
+    .faq-scroll {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+    .faq-scroll::-webkit-scrollbar { height: 3px; }
+    .faq-scroll::-webkit-scrollbar-thumb { background: var(--chip-border); border-radius: 3px; }
+
+    .faq-btn {
+      flex-shrink: 0;
+      scroll-snap-align: start;
+      background: var(--surface);
+      border: 1px solid var(--chip-border);
+      border-radius: 12px;
+      padding: 11px 13px;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.18s;
+      box-shadow: var(--faq-shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      width: 108px;
+    }
+    .faq-btn:hover {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      transform: translateY(-2px);
+    }
+    .faq-btn:active { transform: translateY(0); }
+    .faq-icon  { font-size: 18px; line-height: 1; }
+    .faq-label { font-size: 12px; font-weight: 600; color: var(--text); line-height: 1.3; }
+    .faq-sub   { font-size: 10px; color: var(--muted); line-height: 1.3; }
+
+    /* ── 출처 카드 ── */
+    .src-card {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent-soft);
+      border: 1px solid var(--chip-border);
+      border-radius: 10px;
+      padding: 7px 12px;
+      text-decoration: none;
+      transition: border-color 0.15s;
+      max-width: 100%;
+    }
+    .src-card:hover { border-color: var(--accent); }
+    .src-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+    .src-body { flex: 1; min-width: 0; }
+    .src-title { font-size: 11px; font-weight: 600; color: var(--accent); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .src-sub   { font-size: 10px; color: var(--muted); margin-top: 1px; }
+
+    /* ── 이미지 뷰어 (셔틀버스 등) ── */
+    .img-wrap { margin-top: 6px; }
+    .chat-img {
+      width: 100%;
+      max-width: 340px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      cursor: zoom-in;
+    }
+
+    /* ── 타이핑 인디케이터 ── */
+    #typing-row { display: none; }
+    .typing-bub {
+      background: var(--bubble-ai);
+      border-radius: 18px;
+      border-bottom-left-radius: 5px;
+      padding: 14px 16px;
+      box-shadow: var(--shadow);
+    }
+    .dots { display: flex; align-items: center; gap: 4px; }
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--hint);
+      animation: bounce 1.2s ease-in-out infinite;
+    }
+    .dot:nth-child(2) { animation-delay: .2s; }
+    .dot:nth-child(3) { animation-delay: .4s; }
+    @keyframes bounce {
+      0%, 80%, 100% { transform: translateY(0); }
+      40%           { transform: translateY(-5px); }
+    }
+
+    /* ── 입력 영역 — 통합 박스 ── */
+    #input-area {
+      padding: 12px 20px 18px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .inp-unified {
+      display: flex;
+      align-items: center;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 28px;
+      padding: 6px 6px 6px 18px;
+      transition: border-color 0.15s;
+    }
+    .inp-unified:focus-within { border-color: var(--accent); }
+    #user-input {
+      flex: 1;
+      background: none;
+      border: none;
+      outline: none;
+      font-size: 14px;
+      font-family: 'Noto Sans KR', sans-serif;
+      color: var(--text);
+      padding: 4px 0;
+      min-width: 0;
+    }
+    #user-input::placeholder { color: var(--hint); }
+    #send-btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      flex-shrink: 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: transform 0.15s, background 0.15s;
+    }
+    #send-btn:hover { background: #1d4ed8; transform: scale(1.06); }
+
+    /* ══════════════════════════════════════════
+       사이드 패널
+    ══════════════════════════════════════════ */
+    #side-panel {
+      width: 200px;
+      background: var(--panel);
+      border-left: 1px solid var(--panel-border);
+      padding: 16px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+    #side-panel::-webkit-scrollbar { width: 3px; }
+    #side-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    .sec-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* 캘린더 */
+    .cal-row { display: flex; align-items: flex-start; gap: 8px; padding: 5px 0; }
+    .cal-row + .cal-row { border-top: 1px solid var(--border); }
+    .cal-ind { display: flex; flex-direction: column; align-items: center; gap: 1px; flex-shrink: 0; padding-top: 3px; }
+    .cal-d { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .cal-line { width: 1px; flex: 1; min-height: 6px; background: var(--border); }
+    .cal-date { font-size: 10px; color: var(--hint); font-weight: 500; }
+    .cal-text { font-size: 11.5px; color: var(--text); line-height: 1.4; margin-top: 1px; }
+
+    /* 바로가기 */
+    .links { display: flex; flex-direction: column; gap: 5px; }
+    .lnk {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 9px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      font-size: 11.5px;
+      color: var(--text);
+      text-decoration: none;
+      transition: all 0.15s;
+      box-shadow: var(--shadow);
+    }
+    .lnk:hover { border-color: var(--accent); color: var(--accent); }
+    .lnk i { font-size: 14px; color: var(--muted); }
+    .lnk:hover i { color: var(--accent); }
+
+    /* 공지 */
+    .ntc { padding: 7px 0; }
+    .ntc + .ntc { border-top: 1px solid var(--border); }
+    .ntc-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 2px 7px;
+      border-radius: 5px;
+      margin-bottom: 4px;
+    }
+    .ntc-text { font-size: 11.5px; color: var(--text); line-height: 1.4; }
+    .ntc-date { font-size: 10px; color: var(--hint); margin-top: 3px; }
+
+    /* ══════════════════════════════════════════
+       이미지 모달
+    ══════════════════════════════════════════ */
+    #img-modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.82);
+      cursor: zoom-out;
+      align-items: center;
+      justify-content: center;
+    }
+    #img-modal.open { display: flex; }
+    #modal-img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 6px;
+      box-shadow: 0 0 40px rgba(0,0,0,0.5);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── 헤더 ── -->
+  <div id="header">
+    <div class="hd-brand">
+      <div class="hd-badge">
+        <!-- 단봇 로고 아이콘 -->
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M12 2v3M12 19v3M2 12h3M19 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/>
+        </svg>
+        <span>단봇</span>
+      </div>
+      <span class="hd-pill">단국대 학사 AI</span>
+    </div>
+    <div class="hd-actions">
+      <button class="hd-btn" id="reset-btn"   title="대화 초기화"   aria-label="대화 초기화"><i class="ti ti-refresh"></i></button>
+      <button class="hd-btn" id="dark-btn"    title="다크모드 전환" aria-label="다크모드 전환"><i class="ti ti-moon"></i></button>
+      <button class="hd-btn" id="setting-btn" title="설정"          aria-label="설정"><i class="ti ti-settings"></i></button>
+    </div>
+  </div>
+
+  <!-- ── 본문 ── -->
+  <div id="body">
+
+    <!-- 채팅창 -->
+    <div id="chat">
+      <div id="messages">
+
+        <!-- 웰컴 메시지 + FAQ -->
+        <div class="msg-row" id="welcome-row">
+          <div class="avatar">단</div>
+          <div class="msg-col">
+            <span class="msg-name">단봇</span>
+            <div class="bub-wrap">
+              <div class="bubble bot">
+                안녕하세요! 단국대 학사 정보를 실시간으로 알려드리는 <strong>단봇</strong>이에요.<br>
+                아래 버튼을 누르거나, 궁금한 걸 직접 입력해보세요 😊
+              </div>
+              <button class="cpy-btn" aria-label="복사"><i class="ti ti-copy"></i></button>
+            </div>
+
+            <!-- FAQ 가로 스크롤 -->
+            <div class="faq-scroll-wrap" id="faq-wrap">
+              <div class="faq-scroll">
+                <button class="faq-btn" data-q="이번 학기 학사일정 알려줘">
+                  <span class="faq-icon">📅</span>
+                  <span class="faq-label">학사일정</span>
+                  <span class="faq-sub">주요 일정 확인</span>
+                </button>
+                <button class="faq-btn" data-q="장학금 신청 방법이랑 종류 알려줘">
+                  <span class="faq-icon">🎓</span>
+                  <span class="faq-label">장학금</span>
+                  <span class="faq-sub">신청 방법·종류</span>
+                </button>
+                <button class="faq-btn" data-q="셔틀버스 노선이랑 시간표 알려줘">
+                  <span class="faq-icon">🚌</span>
+                  <span class="faq-label">셔틀버스</span>
+                  <span class="faq-sub">노선·시간표</span>
+                </button>
+                <button class="faq-btn" data-q="수강신청 일정이랑 방법 알려줘">
+                  <span class="faq-icon">📝</span>
+                  <span class="faq-label">수강신청</span>
+                  <span class="faq-sub">일정·신청 방법</span>
+                </button>
+                <button class="faq-btn" data-q="성적 처리 및 졸업 요건 알려줘">
+                  <span class="faq-icon">📊</span>
+                  <span class="faq-label">성적·졸업</span>
+                  <span class="faq-sub">이수 요건·GPA</span>
+                </button>
+                <button class="faq-btn" data-q="교내 편의시설 위치 알려줘">
+                  <span class="faq-icon">🏫</span>
+                  <span class="faq-label">편의시설</span>
+                  <span class="faq-sub">식당·도서관</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 타이핑 인디케이터 -->
+        <div class="msg-row" id="typing-row">
+          <div class="avatar">단</div>
+          <div class="msg-col">
+            <span class="msg-name">단봇</span>
+            <div class="typing-bub">
+              <div class="dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /#messages -->
+
+      <!-- 입력창 — 통합 박스 -->
+      <div id="input-area">
+        <div class="inp-unified">
+          <input type="text" id="user-input"
+            placeholder="학사, 장학금, 셔틀버스 등 뭐든 물어보세요"
+            autocomplete="off">
+          <button id="send-btn" aria-label="전송">
+            <i class="ti ti-send"></i>
+          </button>
+        </div>
+      </div>
+    </div><!-- /#chat -->
+
+    <!-- 사이드 패널 -->
+    <div id="side-panel">
+
+      <!-- 학사일정 -->
+      <div>
+        <div class="sec-label">
+          <i class="ti ti-calendar-event" style="font-size:12px"></i> 학사일정
+        </div>
+        <div>
+          <div class="cal-row">
+            <div class="cal-ind"><div class="cal-d" style="background:var(--dot-red)"></div><div class="cal-line"></div></div>
+            <div><div class="cal-date">6월 23일</div><div class="cal-text">기말고사 시작</div></div>
+          </div>
+          <div class="cal-row">
+            <div class="cal-ind"><div class="cal-d" style="background:var(--dot-amber)"></div><div class="cal-line"></div></div>
+            <div><div class="cal-date">6월 27일</div><div class="cal-text">성적 이의신청</div></div>
+          </div>
+          <div class="cal-row">
+            <div class="cal-ind"><div class="cal-d" style="background:var(--dot-blue)"></div><div class="cal-line"></div></div>
+            <div><div class="cal-date">7월 14일</div><div class="cal-text">재학생 수강신청</div></div>
+          </div>
+          <div class="cal-row" style="border:none">
+            <div class="cal-ind"><div class="cal-d" style="background:var(--dot-green)"></div></div>
+            <div><div class="cal-date">7월 16일</div><div class="cal-text">신입생 수강신청</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 바로가기 -->
+      <div>
+        <div class="sec-label">
+          <i class="ti ti-arrow-up-right" style="font-size:12px"></i> 바로가기
+        </div>
+        <div class="links">
+          <a class="lnk" href="https://portal.dankook.ac.kr" target="_blank"><i class="ti ti-id-badge"></i> 포털 로그인</a>
+          <a class="lnk" href="https://sugang.dankook.ac.kr" target="_blank"><i class="ti ti-book"></i> 수강신청</a>
+          <a class="lnk" href="https://www.dankook.ac.kr/web/kor/-24" target="_blank"><i class="ti ti-certificate"></i> 증명서 발급</a>
+          <a class="lnk" href="https://www.dankook.ac.kr/web/kor/-174" target="_blank"><i class="ti ti-bus"></i> 셔틀버스 노선</a>
+        </div>
+      </div>
+
+      <!-- 최신 공지 -->
+      <div>
+        <div class="sec-label">
+          <i class="ti ti-bell" style="font-size:12px"></i> 최신 공지
+        </div>
+        <div id="notice-list">
+          <!-- 실제 운영 시 크롤러 데이터로 동적 주입 가능 -->
+          <div class="ntc">
+            <span class="ntc-tag">장학</span>
+            <div class="ntc-text">2학기 국가장학금 신청 안내</div>
+            <div class="ntc-date">2025.06.18</div>
+          </div>
+          <div class="ntc">
+            <span class="ntc-tag">학사</span>
+            <div class="ntc-text">여름계절학기 수강신청 일정</div>
+            <div class="ntc-date">2025.06.15</div>
+          </div>
+          <div class="ntc">
+            <span class="ntc-tag">시설</span>
+            <div class="ntc-text">도서관 방학 중 운영시간 변경</div>
+            <div class="ntc-date">2025.06.12</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /#side-panel -->
+  </div><!-- /#body -->
+
+  <!-- 이미지 모달 -->
+  <div id="img-modal">
+    <img id="modal-img" alt="확대 이미지">
+  </div>
+
+  <script>
+    /* ══════════════════════════════════════════
+       DOM 참조
+    ══════════════════════════════════════════ */
+    const messages   = document.getElementById('messages');
+    const userInput  = document.getElementById('user-input');
+    const sendBtn    = document.getElementById('send-btn');
+    const typingRow  = document.getElementById('typing-row');
+    const faqWrap    = document.getElementById('faq-wrap');
+    const welcomeRow = document.getElementById('welcome-row');
+    const imgModal   = document.getElementById('img-modal');
+    const modalImg   = document.getElementById('modal-img');
+
+    /* ══════════════════════════════════════════
+       다크모드 토글
+    ══════════════════════════════════════════ */
+    document.getElementById('dark-btn').addEventListener('click', function () {
+      document.body.classList.toggle('dark');
+      this.querySelector('i').className =
+        document.body.classList.contains('dark') ? 'ti ti-sun' : 'ti ti-moon';
+    });
+
+    /* ══════════════════════════════════════════
+       대화 초기화
+    ══════════════════════════════════════════ */
+    document.getElementById('reset-btn').addEventListener('click', () => {
+      [...messages.querySelectorAll('.msg-row:not(#welcome-row):not(#typing-row)')]
+        .forEach(el => el.remove());
+      typingRow.style.display = 'none';
+      faqWrap.style.display = 'block';
+    });
+
+    /* ══════════════════════════════════════════
+       이미지 모달
+    ══════════════════════════════════════════ */
+    function openModal(src) {
+      modalImg.src = src;
+      imgModal.classList.add('open');
+    }
+    imgModal.addEventListener('click', () => imgModal.classList.remove('open'));
+
+    /* ══════════════════════════════════════════
+       복사 버튼 이벤트 등록 헬퍼
+    ══════════════════════════════════════════ */
+    function setupCopyBtn(btn) {
+      btn.addEventListener('click', () => {
+        const bub = btn.previousElementSibling;
+        navigator.clipboard.writeText(bub ? bub.innerText : '').catch(() => {});
+        btn.innerHTML = '<i class="ti ti-check"></i>';
+        setTimeout(() => { btn.innerHTML = '<i class="ti ti-copy"></i>'; }, 1400);
+      });
+    }
+    document.querySelectorAll('.cpy-btn').forEach(setupCopyBtn);
+
+    /* ══════════════════════════════════════════
+       메시지 DOM 생성 헬퍼
+    ══════════════════════════════════════════ */
+    function createAiMessageEl() {
+      const row = document.createElement('div');
+      row.className = 'msg-row';
+
+      const av = document.createElement('div');
+      av.className = 'avatar';
+      av.textContent = '단';
+
+      const col = document.createElement('div');
+      col.className = 'msg-col';
+
+      const name = document.createElement('span');
+      name.className = 'msg-name';
+      name.textContent = '단봇';
+
+      const wrap = document.createElement('div');
+      wrap.className = 'bub-wrap';
+
+      const bub = document.createElement('div');
+      bub.className = 'bubble bot';
+      bub.style.paddingRight = '38px';
+
+      const cpy = document.createElement('button');
+      cpy.className = 'cpy-btn';
+      cpy.setAttribute('aria-label', '복사');
+      cpy.innerHTML = '<i class="ti ti-copy"></i>';
+      setupCopyBtn(cpy);
+
+      wrap.appendChild(bub);
+      wrap.appendChild(cpy);
+      col.appendChild(name);
+      col.appendChild(wrap);
+      row.appendChild(av);
+      row.appendChild(col);
+
+      return { row, col, bub };
+    }
+
+    function appendUserMessage(text) {
+      const row = document.createElement('div');
+      row.className = 'msg-row me';
+
+      const av = document.createElement('div');
+      av.className = 'avatar me';
+      av.textContent = '나';
+
+      const col = document.createElement('div');
+      col.className = 'msg-col me';
+
+      const wrap = document.createElement('div');
+      wrap.className = 'bub-wrap';
+
+      const bub = document.createElement('div');
+      bub.className = 'bubble me';
+      bub.textContent = text;
+
+      wrap.appendChild(bub);
+      col.appendChild(wrap);
+      row.appendChild(av);
+      row.appendChild(col);
+
+      messages.insertBefore(row, typingRow);
+      scrollBottom();
+    }
+
+    /* ══════════════════════════════════════════
+       출처 카드 생성 헬퍼
+    ══════════════════════════════════════════ */
+    function appendSourceCard(col, title, url, date) {
+      const a = document.createElement('a');
+      a.className = 'src-card';
+      a.href = url || '#';
+      a.target = '_blank';
+      a.innerHTML = `
+        <div class="src-dot"></div>
+        <div class="src-body">
+          <div class="src-title">${title}</div>
+          <div class="src-sub">dankook.ac.kr · ${date}</div>
+        </div>
+        <i class="ti ti-external-link" style="font-size:12px;color:var(--muted)"></i>`;
+      col.appendChild(a);
+    }
+
+   /* ══════════════════════════════════════════
+       이미지 응답 파싱 (셔틀, 지도, 기숙사 통합 처리)
+       백엔드에서 "설명\n키워드_URL:[url1,url2]" 형태로 전송
+    ══════════════════════════════════════════ */
+    function parseChatImages(fullText, bub, col) {
+      let targetKeyword = null;
+      if (fullText.includes('shuttle_URL:')) targetKeyword = 'shuttle_URL:';
+      else if (fullText.includes('map_URL:')) targetKeyword = 'map_URL:';
+      else if (fullText.includes('dorm_URL:')) targetKeyword = 'dorm_URL:';
+
+      if (!targetKeyword) return false;
+
+      const [textPart, urlPart] = fullText.split(targetKeyword);
+      bub.innerHTML = textPart.replace(/\n/g, '<br>');
+
+      const urls = urlPart.trim().replace(/[\[\]]/g, '').split(',');
+      urls.forEach(rawUrl => {
+        const url = rawUrl.trim();
+        if (!url) return;
+
+        const wrap = document.createElement('div');
+        wrap.className = 'img-wrap';
+        
+        const img = document.createElement('img');
+        img.src = url;
+        img.className = 'chat-img';
+        
+        if (targetKeyword === 'shuttle_URL:') img.alt = '셔틀버스 노선 이미지';
+        else if (targetKeyword === 'map_URL:') img.alt = '캠퍼스 맵 이미지';
+        else if (targetKeyword === 'dorm_URL:') img.alt = '기숙사 안내 이미지';
+
+        img.addEventListener('click', () => openModal(url));
+        wrap.appendChild(img);
+        col.appendChild(wrap);
+      });
+      return true;
+    }
+
+    /* ══════════════════════════════════════════
+       스크롤 하단 이동
+    ══════════════════════════════════════════ */
+    function scrollBottom() {
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    /* ══════════════════════════════════════════
+       메인 전송 함수 — Flask /chat 스트리밍 연동
+    ══════════════════════════════════════════ */
+    async function sendMessage(text) {
+      const message = text || userInput.value.trim();
+      if (!message) return;
+
+      // FAQ 버튼 숨김
+      faqWrap.style.display = 'none';
+
+      // 내 메시지 렌더
+      appendUserMessage(message);
+      userInput.value = '';
+
+      // 타이핑 인디케이터 표시
+      typingRow.style.display = 'flex';
+      scrollBottom();
+
+      // AI 말풍선 준비
+      const { row, col, bub } = createAiMessageEl();
+
+      try {
+        const response = await fetch('/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message })
+        });
+
+        // 스트리밍 읽기 시작
+        const reader  = response.body.getReader();
+        const decoder = new TextDecoder();
+        let fullText  = '';
+
+        // 타이핑 인디케이터 제거 & AI 버블 삽입
+        typingRow.style.display = 'none';
+        messages.insertBefore(row, typingRow);
+
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+
+          const chunk = decoder.decode(value, { stream: true });
+          fullText += chunk;
+
+         // 실시간 타이핑 효과 (이미지 데이터 전까지만 본문 띄우기)
+          if (!fullText.includes('shuttle_URL:') && !fullText.includes('map_URL:') && !fullText.includes('dorm_URL:')) {
+            bub.innerHTML = fullText.replace(/\n/g, '<br>');
+          }
+          scrollBottom();
+        }
+
+        /* ── 최종 후처리 ── */
+
+        // 1) 통합 이미지 응답 파싱 (셔틀, 지도, 기숙사)
+        if (parseChatImages(fullText, bub, col)) {
+          // 이미지 삽입 완료
+        }
+        // 2) 일반 텍스트 응답
+        else {
+          bub.innerHTML = fullText.replace(/\n/g, '<br>');
+        }
+
+        // 3) 출처 링크가 포함된 경우 (백엔드에서 "SOURCE_URL:url|제목|날짜" 형태로 추가 가능)
+        if (fullText.includes('SOURCE_URL:')) {
+          const srcMatch = fullText.match(/SOURCE_URL:([^\|]+)\|([^\|]+)\|(.+)/);
+          if (srcMatch) {
+            const [, url, title, date] = srcMatch;
+            // 본문에서 SOURCE_URL 라인 제거
+            bub.innerHTML = bub.innerHTML.replace(/SOURCE_URL:.*/g, '');
+            appendSourceCard(col, title.trim(), url.trim(), date.trim());
+          }
+        }
+
+        scrollBottom();
+
+      } catch (err) {
+        typingRow.style.display = 'none';
+        messages.insertBefore(row, typingRow);
+        bub.textContent = '죄송합니다, 오류가 발생했어요. 다시 시도해주세요.';
+        console.error('단봇 오류:', err);
+      }
+    }
+
+    /* ══════════════════════════════════════════
+       이벤트 리스너
+    ══════════════════════════════════════════ */
+    sendBtn.addEventListener('click', () => sendMessage());
+
+    userInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    // FAQ 버튼
+    document.querySelectorAll('.faq-btn').forEach(btn => {
+      btn.addEventListener('click', () => sendMessage(btn.dataset.q));
+    });
+  </script>
+</body>
+</html>
