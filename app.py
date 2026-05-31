@@ -44,11 +44,11 @@ def chat():
             return Response(img_response, mimetype='text/plain')                                                               
 
         if "지도" in user_message or "위치" in user_message or "캠퍼스맵" in user_message:
-            img_response = "🗺️ 단국대학교 죽전캠퍼스 전체 종합 안내도입니다.\nmap_URL:[/static/campus_map.png]"
+            img_response = "🗺️ 단국대학교 죽전캠퍼스 전체 종합 안내도입니다.\nshuttle_URL:[/static/campus_map.png]"
             return Response(img_response, mimetype='text/plain')
 
         if "기숙사" in user_message or "웅비홀" in user_message or "진리관" in user_message:
-            img_response = "🏢 죽전캠퍼스 생활관(웅비홀/진리관) 안내 및 호실 배치도입니다.\ndorm_URL:[/static/dormitory_guide1.png,/static/dormitory_guide2.png]"
+            img_response = "🏢 죽전캠퍼스 생활관(웅비홀/진리관) 안내 및 호실 배치도입니다.\nshuttle_URL:[/static/dormitory_guide1.png,/static/dormitory_guide2.png]"
             return Response(img_response, mimetype='text/plain')
             
         raw_data, urls = None, []
