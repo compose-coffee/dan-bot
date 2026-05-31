@@ -76,17 +76,21 @@
       align-items: center;
       justify-content: space-between;
       flex-shrink: 0;
+      z-index: 100;
     }
     .hd-brand { display: flex; align-items: center; gap: 10px; }
-    .hd-badge {
-      background: rgba(255,255,255,0.18);
+
+    /* ✅ 로고 이미지 */
+    .hd-logo {
+      width: 36px; height: 36px;
       border-radius: 8px;
-      padding: 5px 9px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      overflow: hidden;
+      background: white;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
     }
-    .hd-badge span { color: white; font-size: 14px; font-weight: 700; letter-spacing: -0.3px; }
+    .hd-logo img { width: 100%; height: 100%; object-fit: cover; }
+
     .hd-pill {
       background: rgba(255,255,255,0.12);
       border: 1px solid rgba(255,255,255,0.22);
@@ -101,14 +105,11 @@
       background: rgba(255,255,255,0.15);
       border: 1px solid rgba(255,255,255,0.28);
       border-radius: 8px;
-      width: 33px;
-      height: 33px;
+      width: 33px; height: 33px;
       cursor: pointer;
       color: rgba(255,255,255,0.95);
       font-size: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       transition: background 0.15s;
     }
     .hd-btn:hover { background: rgba(255,255,255,0.28); }
@@ -129,23 +130,26 @@
       align-items: center;
       justify-content: center;
       padding: 32px 24px;
-      gap: 28px;
-    }
-    .welcome-text { text-align: center; }
-    .welcome-hi {
-      font-size: 24px;
-      font-weight: 700;
-      color: var(--text);
-      letter-spacing: -0.5px;
-      margin-bottom: 10px;
-    }
-    .welcome-sub {
-      font-size: 14px;
-      color: var(--muted);
-      line-height: 1.7;
+      gap: 24px;
     }
 
-    /* FAQ 그리드 */
+    /* ✅ 웰컴 로고 */
+    .welcome-logo {
+      width: 80px; height: 80px;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,76,151,0.2);
+    }
+    .welcome-logo img { width: 100%; height: 100%; object-fit: cover; }
+
+    .welcome-text { text-align: center; }
+    .welcome-hi {
+      font-size: 24px; font-weight: 700;
+      color: var(--text); letter-spacing: -0.5px;
+      margin-bottom: 10px;
+    }
+    .welcome-sub { font-size: 14px; color: var(--muted); line-height: 1.7; }
+
     .faq-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -158,13 +162,10 @@
       border: 1px solid var(--border);
       border-radius: 14px;
       padding: 14px 14px 12px;
-      cursor: pointer;
-      text-align: left;
+      cursor: pointer; text-align: left;
       transition: all 0.18s;
       box-shadow: var(--faq-shadow);
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
+      display: flex; flex-direction: column; gap: 6px;
     }
     .faq-card:hover {
       border-color: var(--accent);
@@ -183,17 +184,13 @@
     #chatview { flex: 1; display: none; flex-direction: column; overflow: hidden; }
 
     #messages {
-      flex: 1;
-      overflow-y: auto;
+      flex: 1; overflow-y: auto;
       padding: 20px 20px 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
+      display: flex; flex-direction: column; gap: 20px;
     }
     #messages::-webkit-scrollbar { width: 4px; }
     #messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 
-    /* 메시지 행 */
     .msg-row { display: flex; gap: 10px; align-items: flex-end; }
     .msg-row.me { flex-direction: row-reverse; }
 
@@ -204,20 +201,20 @@
       font-size: 12px; font-weight: 700;
       flex-shrink: 0; color: white;
       background: var(--nav);
+      overflow: hidden;
     }
     .avatar.me { background: #7c3aed; }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
 
     .msg-col { display: flex; flex-direction: column; gap: 5px; max-width: 78%; }
     .msg-col.me { align-items: flex-end; max-width: 68%; }
     .msg-name { font-size: 11px; color: var(--hint); font-weight: 500; padding: 0 4px; }
 
-    /* 말풍선 */
     .bub-wrap { position: relative; display: inline-block; max-width: 100%; }
     .bubble {
       padding: 11px 16px;
       border-radius: 18px;
-      font-size: 14px;
-      line-height: 1.7;
+      font-size: 14px; line-height: 1.7;
       color: var(--text);
       background: var(--surface);
       box-shadow: var(--shadow);
@@ -226,7 +223,18 @@
     .bubble.bot { border-bottom-left-radius: 5px; }
     .bubble.me  { background: var(--bubble-user); color: #fff; border-bottom-right-radius: 5px; }
 
-    /* 복사 버튼 */
+    /* ✅ 에러 말풍선 */
+    .bubble.error {
+      background: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+    body.dark .bubble.error {
+      background: #2d1515;
+      color: #fca5a5;
+      border-color: #7f1d1d;
+    }
+
     .cpy-btn {
       position: absolute; top: 8px; right: 10px;
       background: rgba(0,0,0,0.08);
@@ -241,7 +249,6 @@
     .bub-wrap:hover .cpy-btn { opacity: 1; }
     .cpy-btn:hover { background: rgba(0,0,0,0.16); color: var(--text); }
 
-    /* 출처 카드 */
     .src-card {
       display: flex; align-items: center; gap: 8px;
       background: var(--accent-soft);
@@ -258,11 +265,9 @@
     .src-title { font-size: 11px; font-weight: 600; color: var(--accent); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .src-sub   { font-size: 10px; color: var(--muted); margin-top: 1px; }
 
-    /* 이미지 (셔틀버스 등) */
     .img-wrap { margin-top: 6px; }
     .chat-img { width: 100%; max-width: 340px; border-radius: 10px; border: 1px solid var(--border); cursor: zoom-in; }
 
-    /* 타이핑 인디케이터 */
     #typing-row { display: none; }
     .typing-bub {
       background: var(--surface);
@@ -307,6 +312,8 @@
       color: var(--text); padding: 4px 0; min-width: 0;
     }
     #user-input::placeholder { color: var(--hint); }
+
+    /* ✅ 전송 버튼 비활성화 상태 */
     #send-btn {
       background: var(--accent); color: #fff;
       border: none; border-radius: 50%;
@@ -314,9 +321,15 @@
       cursor: pointer;
       display: flex; align-items: center; justify-content: center;
       font-size: 16px;
-      transition: transform 0.15s, background 0.15s;
+      transition: transform 0.15s, background 0.15s, opacity 0.15s;
     }
-    #send-btn:hover { background: #1d4ed8; transform: scale(1.06); }
+    #send-btn:hover:not(:disabled) { background: #1d4ed8; transform: scale(1.06); }
+    #send-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+    #user-input:disabled { opacity: 0.5; cursor: not-allowed; }
 
     /* ══════════════════════════════════════════
        사이드 패널
@@ -383,6 +396,44 @@
     }
     #img-modal.open { display: flex; }
     #modal-img { max-width: 90%; max-height: 90%; border-radius: 6px; }
+
+    /* ══════════════════════════════════════════
+       ✅ 모바일 반응형 (768px 이하)
+    ══════════════════════════════════════════ */
+    @media (max-width: 768px) {
+      /* 사이드 패널 숨김 */
+      #side-panel { display: none; }
+
+      /* 웰컴 화면 조정 */
+      #welcome { padding: 24px 16px; gap: 20px; }
+      .welcome-hi { font-size: 20px; }
+      .welcome-logo { width: 64px; height: 64px; border-radius: 16px; }
+
+      /* FAQ 2열로 변경 */
+      .faq-grid {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 100%;
+      }
+
+      /* 말풍선 최대 너비 확대 */
+      .msg-col { max-width: 88%; }
+      .msg-col.me { max-width: 82%; }
+
+      /* 입력창 패딩 조정 */
+      #input-area { padding: 10px 14px 14px; }
+
+      /* 메시지 패딩 조정 */
+      #messages { padding: 16px 14px 10px; }
+
+      /* hd-pill 숨김 (좁은 화면에서 잘림 방지) */
+      .hd-pill { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      /* 더 작은 화면에서 FAQ 1열 */
+      .faq-grid { grid-template-columns: repeat(2, 1fr); }
+      .bubble { font-size: 13px; }
+    }
   </style>
 </head>
 <body>
@@ -390,12 +441,10 @@
   <!-- ── 헤더 ── -->
   <div id="header">
     <div class="hd-brand">
-      <div class="hd-badge">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
-          <circle cx="12" cy="12" r="3"/>
-          <path d="M12 2v3M12 19v3M2 12h3M19 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/>
-        </svg>
-        <span>단봇</span>
+      <!-- ✅ 로고 이미지로 교체 -->
+      <div class="hd-logo">
+        <img src="/static/logo.png" alt="단봇 로고"
+             onerror="this.parentElement.style.padding='6px';this.parentElement.innerHTML='<svg width=&quot;22&quot; height=&quot;22&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;%23004c97&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot;><circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;3&quot;/><path d=&quot;M12 2v3M12 19v3M2 12h3M19 12h3&quot;/></svg>'">
       </div>
       <span class="hd-pill">단국대 학사 AI</span>
     </div>
@@ -412,6 +461,12 @@
 
       <!-- ① 웰컴 화면 -->
       <div id="welcome">
+        <!-- ✅ 웰컴 로고 추가 -->
+        <div class="welcome-logo">
+          <img src="/static/logo.png" alt="단봇"
+               onerror="this.style.display='none'">
+        </div>
+
         <div class="welcome-text">
           <div class="welcome-hi">무엇을 도와드릴까요?</div>
           <div class="welcome-sub">학사일정, 장학금, 셔틀버스 등<br>단국대 정보를 실시간으로 알려드려요</div>
@@ -457,7 +512,7 @@
 
           <!-- 타이핑 인디케이터 -->
           <div class="msg-row" id="typing-row">
-            <div class="avatar">단</div>
+            <div class="avatar" id="typing-avatar">단</div>
             <div class="msg-col">
               <span class="msg-name">단봇</span>
               <div class="typing-bub">
@@ -524,7 +579,6 @@
       <div>
         <div class="sec-label"><i class="ti ti-bell" style="font-size:12px"></i> 최신 공지</div>
         <div id="notice-list">
-          <!-- 실제 운영 시 크롤러 데이터로 동적 주입 가능 -->
           <div class="ntc">
             <span class="ntc-tag">장학</span>
             <div class="ntc-text">2학기 국가장학금 신청 안내</div>
@@ -565,6 +619,18 @@
     const modalImg   = document.getElementById('modal-img');
 
     /* ══════════════════════════════════════════
+       ✅ 타이핑 아바타 로고 설정
+    ══════════════════════════════════════════ */
+    const typingAvatar = document.getElementById('typing-avatar');
+    const logoImg = document.createElement('img');
+    logoImg.src = '/static/logo.png';
+    logoImg.alt = '단봇';
+    logoImg.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%';
+    logoImg.onerror = () => { typingAvatar.textContent = '단'; };
+    typingAvatar.style.background = 'white';
+    typingAvatar.appendChild(logoImg);
+
+    /* ══════════════════════════════════════════
        화면 전환
     ══════════════════════════════════════════ */
     function showChat() {
@@ -574,6 +640,20 @@
     function showWelcome() {
       chatview.style.display = 'none';
       welcome.style.display = 'flex';
+    }
+
+    /* ══════════════════════════════════════════
+       ✅ 입력창 활성화 / 비활성화
+    ══════════════════════════════════════════ */
+    function setInputDisabled(disabled) {
+      userInput.disabled = disabled;
+      sendBtn.disabled = disabled;
+      if (disabled) {
+        userInput.placeholder = '답변을 기다리는 중...';
+      } else {
+        userInput.placeholder = '학사, 장학금, 셔틀버스 등 뭐든 물어보세요';
+        userInput.focus();
+      }
     }
 
     /* ══════════════════════════════════════════
@@ -592,6 +672,7 @@
       [...messages.querySelectorAll('.msg-row:not(#typing-row)')]
         .forEach(el => el.remove());
       typingRow.style.display = 'none';
+      setInputDisabled(false);
       showWelcome();
     });
 
@@ -622,13 +703,11 @@
     function createBubWrap(html, isMe) {
       const wrap = document.createElement('div');
       wrap.className = 'bub-wrap';
-
       const bub = document.createElement('div');
       bub.className = 'bubble ' + (isMe ? 'me' : 'bot');
       if (!isMe) bub.style.paddingRight = '38px';
       bub.innerHTML = html;
       wrap.appendChild(bub);
-
       if (!isMe) {
         const cpy = document.createElement('button');
         cpy.className = 'cpy-btn';
@@ -643,56 +722,57 @@
     function appendUserMessage(text) {
       const row = document.createElement('div');
       row.className = 'msg-row me';
-
       const av = document.createElement('div');
       av.className = 'avatar me';
       av.textContent = '나';
-
       const col = document.createElement('div');
       col.className = 'msg-col me';
       col.appendChild(createBubWrap(text, true));
-
       row.appendChild(av);
       row.appendChild(col);
       messages.insertBefore(row, typingRow);
       messages.scrollTop = messages.scrollHeight;
     }
 
+    /* ✅ 로고 아바타 생성 헬퍼 */
+    function createBotAvatar() {
+      const av = document.createElement('div');
+      av.className = 'avatar';
+      av.style.background = 'white';
+      const img = document.createElement('img');
+      img.src = '/static/logo.png';
+      img.alt = '단봇';
+      img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%';
+      img.onerror = () => { av.style.background = 'var(--nav)'; av.textContent = '단'; img.remove(); };
+      av.appendChild(img);
+      return av;
+    }
+
     function createAiRow() {
       const row = document.createElement('div');
       row.className = 'msg-row';
-
-      const av = document.createElement('div');
-      av.className = 'avatar';
-      av.textContent = '단';
-
+      const av = createBotAvatar();  // ✅ 로고 아바타
       const col = document.createElement('div');
       col.className = 'msg-col';
-
       const name = document.createElement('span');
       name.className = 'msg-name';
       name.textContent = '단봇';
-
       const bub = document.createElement('div');
       bub.className = 'bubble bot';
       bub.style.paddingRight = '38px';
-
       const cpy = document.createElement('button');
       cpy.className = 'cpy-btn';
       cpy.setAttribute('aria-label', '복사');
       cpy.innerHTML = '<i class="ti ti-copy"></i>';
       setupCopyBtn(cpy);
-
       const wrap = document.createElement('div');
       wrap.className = 'bub-wrap';
       wrap.appendChild(bub);
       wrap.appendChild(cpy);
-
       col.appendChild(name);
       col.appendChild(wrap);
       row.appendChild(av);
       row.appendChild(col);
-
       return { row, col, bub };
     }
 
@@ -716,7 +796,6 @@
 
     /* ══════════════════════════════════════════
        셔틀버스 이미지 파싱
-       백엔드: "설명\nshuttle_URL:[url1,url2]"
     ══════════════════════════════════════════ */
     function parseShuttleImages(fullText, bub, col) {
       if (!fullText.includes('shuttle_URL:')) return false;
@@ -749,6 +828,9 @@
       showChat();
       appendUserMessage(message);
       userInput.value = '';
+
+      /* ✅ 전송 중 입력창 비활성화 */
+      setInputDisabled(true);
 
       typingRow.style.display = 'flex';
       messages.scrollTop = messages.scrollHeight;
@@ -785,7 +867,6 @@
           bub.innerHTML = fullText.replace(/\n/g, '<br>');
         }
 
-        /* 출처 카드 — 백엔드에서 "SOURCE_URL:url|제목|날짜" 형태로 전달 */
         if (fullText.includes('SOURCE_URL:')) {
           const m = fullText.match(/SOURCE_URL:([^\|]+)\|([^\|]+)\|(.+)/);
           if (m) {
@@ -797,10 +878,16 @@
         messages.scrollTop = messages.scrollHeight;
 
       } catch (err) {
+        /* ✅ 에러 말풍선 */
         typingRow.style.display = 'none';
-        messages.insertBefore(row, typingRow);
-        bub.textContent = '죄송합니다, 오류가 발생했어요. 다시 시도해주세요.';
+        if (!row.parentNode) messages.insertBefore(row, typingRow);
+        bub.className = 'bubble error';
+        bub.style.paddingRight = '16px';
+        bub.innerHTML = '<i class="ti ti-alert-circle" style="margin-right:6px"></i>죄송합니다, 오류가 발생했어요. 잠시 후 다시 시도해주세요.';
         console.error('단봇 오류:', err);
+      } finally {
+        /* ✅ 응답 완료 후 입력창 재활성화 */
+        setInputDisabled(false);
       }
     }
 
