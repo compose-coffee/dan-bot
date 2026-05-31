@@ -118,7 +118,3 @@ def get_raw_data(user_message):
             
         raw_results.append({"url": target_url, "text": backup_text})
         return raw_results, [target_url]
-        
-    except Exception as e:
-        print(f"크롤링 지연 패스: {e}")
-        return None, []
