@@ -32,6 +32,7 @@ dan-bot/
 ├── .gitignore
 ├── README.md                 # 프로젝트 개요
 └── requirements.txt          # 프로젝트 의존성 라이브러리 목록
+```
 
 ## 주요 디렉토리와 파일 구성 설명:
 - assets/: README 및 기술 문서에 연동되는 이미지 자산, 시스템 로고, 구조 시각화 UML 다이어그램 보관 폴더
