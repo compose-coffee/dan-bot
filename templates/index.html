@@ -546,7 +546,7 @@
 
       <div>
         <div class="sec-label"><i class="ti ti-calendar-event" style="font-size:12px"></i> 학사일정</div>
-        <div>
+        <div id="schedule-list">
           <div class="cal-row">
             <div class="cal-ind"><div class="cal-d" style="background:var(--dot-red)"></div><div class="cal-line"></div></div>
             <div><div class="cal-date">6월 23일</div><div class="cal-text">기말고사 시작</div></div>
@@ -617,6 +617,8 @@
     const sendBtn    = document.getElementById('send-btn');
     const imgModal   = document.getElementById('img-modal');
     const modalImg   = document.getElementById('modal-img');
+    const scheduleList = document.getElementById('schedule-list');
+    const noticeList = document.getElementById('notice-list');
 
     /* ══════════════════════════════════════════
        ✅ 타이핑 아바타 로고 설정
@@ -793,6 +795,43 @@
         <i class="ti ti-external-link" style="font-size:12px;color:var(--muted)"></i>`;
       col.appendChild(a);
     }
+
+    async function loadSidebarData() {
+      if (!scheduleList || !noticeList) return;
+      try {
+        const res = await fetch('/sidebar-data');
+        if (!res.ok) throw new Error('사이드바 데이터를 가져오지 못했습니다.');
+        const data = await res.json();
+        if (data.schedule && data.schedule.length) renderScheduleItems(data.schedule);
+        if (data.notices && data.notices.length) renderNoticeItems(data.notices);
+      } catch (err) {
+        console.warn('사이드바 데이터 로딩 실패:', err);
+      }
+    }
+
+    function renderScheduleItems(items) {
+      scheduleList.innerHTML = items.map((item, index) => {
+        const color = ['var(--dot-red)', 'var(--dot-amber)', 'var(--dot-blue)', 'var(--dot-green)'][index % 4];
+        const line = index < items.length - 1 ? '<div class="cal-line"></div>' : '';
+        return `<div class="cal-row" style="border:none">
+            <div class="cal-ind"><div class="cal-d" style="background:${color}"></div>${line}</div>
+            <div><div class="cal-date">${item.date}</div><div class="cal-text">${item.text}</div></div>
+          </div>`;
+      }).join('');
+    }
+
+    function renderNoticeItems(items) {
+      noticeList.innerHTML = items.map(item => {
+        const href = item.url ? ` href="${item.url}" target="_blank" rel="noreferrer"` : '';
+        return `<a class="ntc"${href}>
+            <span class="ntc-tag">${item.tag}</span>
+            <div class="ntc-text">${item.text}</div>
+            <div class="ntc-date">${item.date}</div>
+          </a>`;
+      }).join('');
+    }
+
+    window.addEventListener('DOMContentLoaded', loadSidebarData);
 
     /* ══════════════════════════════════════════
        셔틀버스 이미지 파싱
