@@ -1,8 +1,10 @@
 import os
+import re
 import time
 import webbrowser
 import threading
-from flask import Flask, render_template, request, Response, stream_with_context, send_from_directory
+from datetime import datetime
+from flask import Flask, render_template, request, Response, stream_with_context, send_from_directory, jsonify
 from crawler.scraper import get_raw_data
 from ai_engine.rag_logic import refine_context
 from ai_engine.llm_handler import generate_streaming_response, BASIC_INFO
@@ -12,9 +14,108 @@ app = Flask(__name__,
             template_folder=os.path.join(base_dir, 'templates'),
             static_folder=os.path.join(base_dir, 'static'))
 
+
+def extract_source_title(raw_text):
+    for line in raw_text.splitlines():
+        clean = line.strip()
+        if clean:
+            return clean if len(clean) <= 60 else clean[:60] + '...'
+    return '단국대 공식 출처'
+
+
+def extract_source_date(raw_text):
+    match = re.search(r'(\d{4}\.\d{1,2}\.\d{1,2}|\d{1,2}\.\d{1,2}|\d{1,2}월\s*\d{1,2}일)', raw_text)
+    return match.group(1) if match else None
+
+
+def make_source_marker(raw_data, urls):
+    if not urls or not raw_data:
+        return None
+    url = urls[0]
+    first_text = raw_data[0].get('text', '')
+    title = extract_source_title(first_text)
+    date = extract_source_date(first_text) or datetime.now().strftime('%Y.%m.%d')
+    return f"\n\nSOURCE_URL:{url}|{title}|{date}"
+
+
+def parse_schedule_items(raw_text):
+    if not raw_text:
+        return []
+    lines = [re.sub(r'\s+', ' ', line).strip() for line in raw_text.splitlines() if line.strip()]
+    items = []
+    for line in lines:
+        match = re.search(r'(\d{1,2}월\s*\d{1,2}일|\d{4}\.\d{1,2}\.\d{1,2}|\d{1,2}/\d{1,2})', line)
+        if not match:
+            continue
+        date = match.group(1)
+        text = line[match.end():].strip(' -–:') or line
+        items.append({'date': date, 'text': text})
+        if len(items) >= 4:
+            break
+    return items
+
+
+def parse_notice_items(raw_text, source_url, tag='공지'):
+    if not raw_text:
+        return []
+    lines = [line.strip() for line in raw_text.splitlines() if line.strip()]
+    notices = []
+    for line in lines:
+        if len(notices) >= 3:
+            break
+        match = re.search(r'(\d{4}\.\d{1,2}\.\d{1,2}|\d{1,2}\.\d{1,2}|\d{1,2}월\s*\d{1,2}일)', line)
+        if not match:
+            continue
+        date = match.group(1)
+        text = line.replace(match.group(0), '').strip(' -–:') or line
+        notices.append({'tag': tag, 'text': text, 'date': date, 'url': source_url})
+    if not notices:
+        for line in lines[:3]:
+            notices.append({
+                'tag': tag,
+                'text': line[:60],
+                'date': datetime.now().strftime('%Y.%m.%d'),
+                'url': source_url
+            })
+    return notices
+
+
+def get_sidebar_data():
+    schedule_raw, _ = get_raw_data('학사일정')
+    notice_raw, notice_urls = get_raw_data('장학')
+
+    schedule_items = []
+    if schedule_raw and schedule_raw[0].get('text'):
+        schedule_items = parse_schedule_items(schedule_raw[0]['text'])
+
+    notice_items = []
+    if notice_raw and notice_urls:
+        notice_items = parse_notice_items(notice_raw[0]['text'], notice_urls[0], '장학')
+
+    if not schedule_items:
+        schedule_items = [
+            {'date': '6월 23일', 'text': '기말고사 시작'},
+            {'date': '6월 27일', 'text': '성적 이의신청'},
+            {'date': '7월 14일', 'text': '재학생 수강신청'},
+            {'date': '7월 16일', 'text': '신입생 수강신청'}
+        ]
+
+    if not notice_items:
+        notice_items = [
+            {'tag': '장학', 'text': '2학기 국가장학금 신청 안내', 'date': '2025.06.18', 'url': 'https://dankook.ac.kr/-450'},
+            {'tag': '학사', 'text': '여름계절학기 수강신청 일정', 'date': '2025.06.15', 'url': 'https://www.dankook.ac.kr/web/kor/-455'},
+            {'tag': '시설', 'text': '도서관 방학 중 운영시간 변경', 'date': '2025.06.12', 'url': 'https://lib.dankook.ac.kr/'}
+        ]
+
+    return {'schedule': schedule_items, 'notices': notice_items}
+
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/sidebar-data')
+def sidebar_data():
+    return jsonify(get_sidebar_data())
 
 @app.route('/assets/<path:filename>')
 def assets(filename):
@@ -72,6 +173,9 @@ def chat():
             try:
                 for chunk in generate_streaming_response(context, user_message, urls):
                     yield chunk
+                marker = make_source_marker(raw_data, urls)
+                if marker:
+                    yield marker
             except Exception as llm_err:
                 print(f"Ollama 스트리밍 실패: {llm_err}")
                 yield "죄송합니다. 현재 AI 엔진과의 통신이 원활하지 않습니다. 학사팀(031-8005-2050)으로 문의하시거나 잠시 후 다시 시도해 주세요."
