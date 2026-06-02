@@ -175,7 +175,7 @@ ollama run llama3.2
 python src/app.py
 ```
 
-서버 실행 후 브라우저에서 `http://localhost:5000` 접속
+서버 실행 후 브라우저에서 `http://localhost:7860` 접속
 
 ---
 
