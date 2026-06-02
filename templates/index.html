@@ -443,7 +443,7 @@
     <div class="hd-brand">
       <!-- ✅ 로고 이미지로 교체 -->
       <div class="hd-logo">
-        <img src="/static/logo.png" alt="단봇 로고"
+        <img src="/assets/logo.png" alt="단봇 로고"
              onerror="this.parentElement.style.padding='6px';this.parentElement.innerHTML='<svg width=&quot;22&quot; height=&quot;22&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;%23004c97&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot;><circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;3&quot;/><path d=&quot;M12 2v3M12 19v3M2 12h3M19 12h3&quot;/></svg>'">
       </div>
       <span class="hd-pill">단국대 학사 AI</span>
@@ -463,7 +463,7 @@
       <div id="welcome">
         <!-- ✅ 웰컴 로고 추가 -->
         <div class="welcome-logo">
-          <img src="/static/logo.png" alt="단봇"
+          <img src="/assets/logo.png" alt="단봇"
                onerror="this.style.display='none'">
         </div>
 
@@ -623,7 +623,7 @@
     ══════════════════════════════════════════ */
     const typingAvatar = document.getElementById('typing-avatar');
     const logoImg = document.createElement('img');
-    logoImg.src = '/static/logo.png';
+    logoImg.src = '/assets/logo.png';
     logoImg.alt = '단봇';
     logoImg.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%';
     logoImg.onerror = () => { typingAvatar.textContent = '단'; };
@@ -740,7 +740,7 @@
       av.className = 'avatar';
       av.style.background = 'white';
       const img = document.createElement('img');
-      img.src = '/static/logo.png';
+      img.src = '/assets/logo.png';
       img.alt = '단봇';
       img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%';
       img.onerror = () => { av.style.background = 'var(--nav)'; av.textContent = '단'; img.remove(); };

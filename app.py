@@ -2,7 +2,7 @@ import os
 import time
 import webbrowser
 import threading
-from flask import Flask, render_template, request, Response, stream_with_context
+from flask import Flask, render_template, request, Response, stream_with_context, send_from_directory
 from crawler.scraper import get_raw_data
 from ai_engine.rag_logic import refine_context
 from ai_engine.llm_handler import generate_streaming_response, BASIC_INFO
@@ -15,6 +15,10 @@ app = Flask(__name__,
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/assets/<path:filename>')
+def assets(filename):
+    return send_from_directory(os.path.join(base_dir, 'assets'), filename)
 
 @app.route('/chat', methods=['POST'])
 def chat():
