@@ -11,18 +11,15 @@ URL_MAP = {
     "복학": ["https://www.dankook.ac.kr/register1"],
     "자퇴": ["https://www.dankook.ac.kr/-register2"],
     "제적": ["https://www.dankook.ac.kr/-register2"],
-    "재입학": ["https://www.dankook.ac.kr/-register2"],
 
     # 3. [수업 및 성적 심화]
     "학사일정": ["https://www.dankook.ac.kr/-2014-"],
     "수강신청": ["https://www.dankook.ac.kr/web/kor/-452"],
     "계절학기": ["https://www.dankook.ac.kr/web/kor/-455"],
     "성적": ["https://www.dankook.ac.kr/web/kor/-462"],
-    "재수강": ["https://www.dankook.ac.kr/-462"],
     "학사경고": ["https://www.dankook.ac.kr/web/kor/-389"],
 
     # 4. [주요 공지사항 게시판]
-    "공지": ["https://www.dankook.ac.kr/-390"],
     "장학": ["https://dankook.ac.kr/-450"],
     "공모전": ["https://iacf.dankook.ac.kr/-1"],
     "채용": ["https://www.dankook.ac.kr/apply_noti"],
@@ -30,12 +27,7 @@ URL_MAP = {
     # 5. [캠퍼스 생활 및 편의/복지] 
     "학식": ["https://www.dankook.ac.kr/1947_commons"],
     "증명서": ["https://www.dankook.ac.kr/-327"],
-    "예비군": ["https://www.dankook.ac.kr/-476"],
     "동아리": ["https://www.dankook.ac.kr/web/kor/-519"],
-    "은행": ["https://www.dankook.ac.kr/web/kor/-525"],
-    "ATM": ["https://www.dankook.ac.kr/web/kor/-525"],
-    "복사기": ["https://www.dankook.ac.kr/web/kor/-525"],
-    "편의점": ["https://www.dankook.ac.kr/web/kor/-525"],
     "도서관": ["https://lib.dankook.ac.kr/"],
 
     # 6. [졸업 및 취업/스펙 스페이스]
@@ -49,9 +41,6 @@ URL_MAP = {
     "모시공": ["https://cms.dankook.ac.kr/web/mobilesystems"],
     "김태윤": ["https://portal.dankook.ac.kr/ctt/dku/profinfo/detailSearch?uld=2BD061468FC5D8FEA7E47E64D2509F43"],
     "최수한": ["https://portal.dankook.ac.kr/ctt/dku/profinfo/detailSearch?uld=D7B11E56C9FB60CBB35B6A08A9CC360C"],
-    "유시환": ["https://portal.dankook.ac.kr/ctt/dku/profinfo/detailSearch?uld=3A31990B1586DD4BAFC52AE1500F232D"],
-    "박재연": ["https://portal.dankook.ac.kr/ctt/dku/profinfo/detailSearch?uld=382024BB824B91E6D86AC640EBE074BD"],
-    "이규행": ["https://portal.dankook.ac.kr/ctt/dku/profinfo/detailSearch?uld=CF00987C2B01F1FE6FFE6CC893175092"],
     "송인식": ["https://portal.dankook.ac.kr/ctt/dku/profinfo/detailSearch?uld=1DCF7E2DFF956B6637D8FAA6D60D7551"],
     "모시공 커리큘럼": ["https://cms.dankook.ac.kr/web/mobilesystems/-3"],
     "모시공 취업": ["https://cms.dankook.ac.kr/web/mobilesystems/-8"],
@@ -69,6 +58,7 @@ _GLOBAL_DRIVER = webdriver.Chrome(service=Service(ChromeDriverManager().install(
 _GLOBAL_DRIVER.set_page_load_timeout(3)
 print("[시스템] 드라이버 로딩 완료! 크롤러 상시 대기 중.")
 
+
 def get_raw_data(user_message):
     """
     상시 대기 브라우저로 긁어오되, 실패하거나 데이터가 부실하면 
@@ -80,7 +70,11 @@ def get_raw_data(user_message):
         "복학": "복학 신청 안내: 매 학기 정해진 복학 신청 기간(보통 2월, 8월) 내에 단국대 포털 웹정보 시스템에서 온라인으로 신청해야 합니다. 군휴학 복학자의 경우 전역증 사본 또는 병적증명서를 첨부해야 합니다. 상세 문의: 학사팀 031-8005-2050",
         "김태윤": "김태윤 교수님 정보 (모바일시스템공학과): 연구실은 국제관 514호입니다. 주요 강의 목록 및 담당 과목은 [정보보호개론], [신호및시스템], [강화학습], [인공지능] 입니다. 이메일: tykim@dankook.ac.kr",
         "최수한": "최수한 교수님 정보 (모바일시스템공학과): 연구실은 국제관 516호입니다. 주요 강의 목록은 [컴퓨터네트워크], [대학미적분학], [모바일이동통신] 입니다. 이메일: choisg@dankook.ac.kr",
-        "모시공": "모바일시스템공학과 안내: 미래 모바일 통신 및 소프트웨어, 하드웨어 융합 인재 양성을 목표로 합니다. 주요 교과과정은 C/C++ 프로그래밍, 자료구조, 컴퓨터 구조, 모바일 시스템 소프트웨어 실험 등으로 구성되어 있습니다."
+        "모시공": "모바일시스템공학과 안내: 미래 모바일 통신 및 소프트웨어, 하드웨어 융합 인재 양성을 목표로 합니다. 주요 교과과정은 C/C++ 프로그래밍, 자료구조, 컴퓨터 구조, 모바일 시스템 소프트웨어 실험 등으로 구성되어 있습니다.",
+        "이규행": "이규행 교수님 정보 (모바일시스템공학과): 연구실은 국제관 520호입니다. 주요 강의 및 연구 분야는 [운영체제(OS)], [오픈소스소프트웨어], [모바일시스템소프트웨어실험], 임베디드 및 파일 시스템 설계입니다. 이메일: khlee@dankook.ac.kr",
+        "학식": "죽전캠퍼스 학식 및 식당 안내: 주요 학생식당은 혜당관(학생회관) 숲속의 식당(학생식당, 교직원식당)과 기숙사 식당(진리관, 웅비관 내)이 있습니다. 푸드코트 형태로 운영되며, 운영 시간은 학기 중 평일 11:30 ~ 13:30 (중식) 및 17:30 ~ 19:00 (석식) 입니다.",
+        "학생증": "모바일 및 스마트 학생증 발급: 신입생 및 재학생은 단국대 앱(Dankook App) 설치 후 모바일 학생증을 즉시 발급받아 도서관 출입 및 좌석 배정에 사용할 수 있습니다. 체크카드 기능이 포함된 실물 학생증은 지정 은행(우리은행) 연계를 통해 발급됩니다.",
+        "예비군": "대학직할 예비군대대 안내: 군 전역 후 복학한 재학생은 혜당관 2층에 위치한 예비군대대에 대원신고서를 제출해야 대학생 방침전면 보류 혜택(연간 8시간 훈련)을 받을 수 있습니다. 상세 문의: 예비군대대 031-8005-2077"
     }
 
     selected_urls = [urls for key, urls in URL_MAP.items() if key in user_message]
