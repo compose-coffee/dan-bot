@@ -229,5 +229,5 @@ copies or substantial portions of the Software.
 ---
 
 <div align="center">
-  <sub>단국대학교 모바일시스템공학과 · 2025</sub>
+  <sub>단국대학교 오픈소스SW기초 3분반 · 2026</sub>
 </div>
