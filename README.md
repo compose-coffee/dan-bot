@@ -37,8 +37,11 @@
 ---
 
 ## 🖥️ 미리보기
+<img src="assets/welcome.png" alt="웰컴페이지" width="1080"/>
+<img src="assets/셔틀버스.png" alt="셔틀버스" width="1080"/>
+<img src="assets/학사일정.png" alt="학사일정" width="1080"/>
+<img src="assets/다크모드.png" alt="다크모드" width="1080"/>
 
-> UI 스크린샷은 개발 완료 후 업데이트 예정입니다.
 
 ```
 ┌─────────────────────────────────────────────────────┐
